@@ -489,6 +489,14 @@ when defined(js):
   template cpsWriteLine(s: string): untyped =
     ## javascript emission of traceback
     console.error s
+
+elif defined(solo5):
+  import solo5
+
+  template cpsWriteLine(s: string): untyped =
+    solo5_console_write(s.cstring, s.len.csize_t)
+    solo5_console_write("\n")
+
 else:
   template cpsWriteLine(s: string): untyped =
     ## non-javascript emission of traceback
