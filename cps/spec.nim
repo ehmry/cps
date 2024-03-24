@@ -500,9 +500,16 @@ when defined(js):
     ## javascript emission of traceback
     console.error s
 elif cpsTraceDeque or cpsStackFrames:
-  template cpsWriteLine(s: string): untyped =
-    ## non-javascript emission of traceback
-    stdmsg().writeLine line
+  when defined(solo5):
+    import solo5
+    template cpsWriteLine(s: string): untyped =
+      solo5_console_write(s.cstring, s.len.csize_t)
+      solo5_console_write("\n")
+
+  else:
+    template cpsWriteLine(s: string): untyped =
+      ## non-javascript emission of traceback
+      stdmsg().writeLine line
 else:
   template cpsWriteLine(s: string): untyped = discard
 
